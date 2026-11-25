@@ -1,9 +1,11 @@
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const {
     findUserByUsername,
-    findUserById
+    findUserById,
+    updateLastLogin
 } = require("../models/userModel");
 
 const login = async (req, res) => {
@@ -40,6 +42,9 @@ const login = async (req, res) => {
                 message: "Invalid username or password"
             });
         }
+
+        // Update last login only after successful password verification
+        await updateLastLogin(user.user_id);
 
         // Create JWT
         const token = jwt.sign(

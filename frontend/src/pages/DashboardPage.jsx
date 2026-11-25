@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -14,7 +15,7 @@ import Navbar from "../components/Navbar";
 
 import "../styles/dashboard.css";
 
-// Normalizes text for case-insensitive search with space handling.
+// Normalize text for search
 const normalizeSearchValue = (value) => {
     return String(value ?? "")
         .toLowerCase()
@@ -22,20 +23,32 @@ const normalizeSearchValue = (value) => {
         .replace(/\s+/g, " ");
 };
 
+// Format last login date and time
+const formatLastLogin = (lastLogin) => {
+    if (!lastLogin) {
+        return "Never logged in";
+    }
+
+    const date = new Date(lastLogin);
+
+    if (Number.isNaN(date.getTime())) {
+        return "Never logged in";
+    }
+
+    return date.toLocaleString();
+};
+
 function DashboardPage() {
     const navigate = useNavigate();
 
     const [user, setUser] = useState(getStoredUser());
-
     const [students, setStudents] = useState([]);
-
     const [searchTerm, setSearchTerm] = useState("");
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     const [showForm, setShowForm] = useState(false);
-
     const [editingStudent, setEditingStudent] = useState(null);
 
     // Load current user
@@ -51,22 +64,18 @@ function DashboardPage() {
                         role: data.user.role
                     });
                 }
-
             } catch (error) {
                 console.error("Failed to load current user:", error);
 
                 if (error.status === 401) {
                     logout();
-                    navigate("/login", {
-                        replace: true
-                    });
+                    navigate("/login", { replace: true });
                 }
             }
         };
 
         loadUser();
     }, [navigate]);
-
 
     // Load students
     const loadStudents = async () => {
@@ -76,9 +85,7 @@ function DashboardPage() {
 
             const data = await apiRequest(
                 "/api/students/",
-                {
-                    method: "GET"
-                }
+                { method: "GET" }
             );
 
             setStudents(data.students || []);
@@ -88,11 +95,7 @@ function DashboardPage() {
 
             if (error.status === 401) {
                 logout();
-
-                navigate("/login", {
-                    replace: true
-                });
-
+                navigate("/login", { replace: true });
                 return;
             }
 
@@ -100,13 +103,11 @@ function DashboardPage() {
                 setError(
                     "You do not have permission to access students."
                 );
-
                 return;
             }
 
             setError(
-                error.message ||
-                "Failed to retrieve students."
+                error.message || "Failed to retrieve students."
             );
 
         } finally {
@@ -114,17 +115,12 @@ function DashboardPage() {
         }
     };
 
-
     useEffect(() => {
         loadStudents();
     }, []);
 
-
-    // Client-side search (CR-001)
-    // Filters the already-loaded students only.
-    // No API request is made for search keystrokes.
+    // Client-side search
     const normalizedSearchTerm = normalizeSearchValue(searchTerm);
-
     const isSearching = normalizedSearchTerm !== "";
 
     const filteredStudents = useMemo(() => {
@@ -149,9 +145,7 @@ function DashboardPage() {
                 `${student.first_name ?? ""} ${student.last_name ?? ""}`
             );
 
-            const email = normalizeSearchValue(
-                student.email
-            );
+            const email = normalizeSearchValue(student.email);
 
             return (
                 registrationNo.includes(normalizedSearchTerm) ||
@@ -163,11 +157,9 @@ function DashboardPage() {
         });
     }, [students, normalizedSearchTerm, isSearching]);
 
-
     const handleClearSearch = () => {
         setSearchTerm("");
     };
-
 
     // Form handling
     const openAddForm = () => {
@@ -175,24 +167,20 @@ function DashboardPage() {
         setShowForm(true);
     };
 
-
     const openEditForm = (student) => {
         setEditingStudent(student);
         setShowForm(true);
     };
-
 
     const handleFormClose = () => {
         setShowForm(false);
         setEditingStudent(null);
     };
 
-
     const handleFormAuthError = () => {
         logout();
         navigate("/login", { replace: true });
     };
-
 
     // Delete student
     const handleDelete = async (studentId) => {
@@ -209,51 +197,32 @@ function DashboardPage() {
 
             await apiRequest(
                 `/api/students/${studentId}`,
-                {
-                    method: "DELETE"
-                }
+                { method: "DELETE" }
             );
 
             await loadStudents();
 
         } catch (error) {
-            console.error(
-                "Delete student error:",
-                error
-            );
+            console.error("Delete student error:", error);
 
             if (error.status === 401) {
                 logout();
-
-                navigate("/login", {
-                    replace: true
-                });
-
+                navigate("/login", { replace: true });
                 return;
             }
 
             setError(
-                error.message ||
-                "Failed to delete student."
+                error.message || "Failed to delete student."
             );
         }
     };
 
-
     // Logout
     const handleLogout = () => {
         logout();
-
-        navigate(
-            "/login",
-            {
-                replace: true
-            }
-        );
+        navigate("/login", { replace: true });
     };
 
-
-    // Render
     return (
         <div className="dashboard-page">
 
@@ -265,20 +234,15 @@ function DashboardPage() {
 
             <main className="dashboard-content">
 
-                {/* Page heading */}
-
                 <div className="students-heading">
 
                     <div>
-                        <h2>
-                            Students
-                        </h2>
+                        <h2>Students</h2>
 
                         <p>
                             Manage student accounts and profiles.
                         </p>
                     </div>
-
 
                     <button
                         className="add-student-button"
@@ -289,17 +253,11 @@ function DashboardPage() {
 
                 </div>
 
-
-                {/* Error */}
-
                 {error && (
                     <div className="dashboard-error">
                         {error}
                     </div>
                 )}
-
-
-                {/* Student form modal */}
 
                 <StudentFormModal
                     show={showForm}
@@ -309,10 +267,8 @@ function DashboardPage() {
                     onAuthError={handleFormAuthError}
                 />
 
-
-                {/* Students */}
-
                 <div className="students-search">
+
                     <input
                         type="text"
                         className="students-search-input"
@@ -333,6 +289,7 @@ function DashboardPage() {
                             Clear
                         </button>
                     )}
+
                 </div>
 
                 {!loading && students.length > 0 && (
@@ -354,9 +311,7 @@ function DashboardPage() {
                     ) : students.length === 0 ? (
 
                         <div className="students-empty">
-                            <h3>
-                                No students found
-                            </h3>
+                            <h3>No students found</h3>
 
                             <p>
                                 Add your first student to get started.
@@ -366,9 +321,7 @@ function DashboardPage() {
                     ) : filteredStudents.length === 0 ? (
 
                         <div className="students-empty">
-                            <h3>
-                                No matching students found
-                            </h3>
+                            <h3>No matching students found</h3>
 
                             <p>
                                 No students match &quot;{searchTerm.trim()}&quot;.
@@ -391,35 +344,19 @@ function DashboardPage() {
 
                                 <thead>
                                     <tr>
-                                        <th>
-                                            Registration No.
-                                        </th>
-
-                                        <th>
-                                            Name
-                                        </th>
-
-                                        <th>
-                                            Email
-                                        </th>
-
-                                        <th>
-                                            Phone
-                                        </th>
-
-                                        <th>
-                                            Actions
-                                        </th>
+                                        <th>Registration No.</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Last Login</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
-
 
                                 <tbody>
 
                                     {filteredStudents.map((student) => (
-                                        <tr
-                                            key={student.student_id}
-                                        >
+                                        <tr key={student.student_id}>
 
                                             <td>
                                                 <strong>
@@ -432,24 +369,23 @@ function DashboardPage() {
                                                 {student.last_name}
                                             </td>
 
+                                            <td>{student.email}</td>
+
+                                            <td>{student.phone_number}</td>
+
                                             <td>
-                                                {student.email}
+                                                {formatLastLogin(
+                                                    student.last_login
+                                                )}
                                             </td>
 
                                             <td>
-                                                {student.phone_number}
-                                            </td>
-
-                                            <td>
-
                                                 <div className="student-actions">
 
                                                     <button
                                                         className="edit-button"
                                                         onClick={() =>
-                                                            openEditForm(
-                                                                student
-                                                            )
+                                                            openEditForm(student)
                                                         }
                                                     >
                                                         Edit
@@ -467,7 +403,6 @@ function DashboardPage() {
                                                     </button>
 
                                                 </div>
-
                                             </td>
 
                                         </tr>
@@ -478,7 +413,6 @@ function DashboardPage() {
                             </table>
 
                         </div>
-
                     )}
 
                 </div>
