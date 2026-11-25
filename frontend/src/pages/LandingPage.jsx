@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
@@ -20,7 +21,6 @@ function LandingPage() {
 
             <Navbar />
 
-
             <main>
 
                 {/* Hero */}
@@ -34,19 +34,18 @@ function LandingPage() {
                         <div className="hero-content">
 
                             <span className="hero-badge">
-                                ABC Institute
+                                UCJ
                             </span>
 
                             <h1>
-                                Student Management
-                                <span> System</span>
+                                University College
+                                <span> of Jaffna</span>
                             </h1>
 
                             <p>
                                 A modern and secure platform for
                                 managing student information efficiently.
                             </p>
-
 
                             <div className="hero-actions">
 
@@ -68,7 +67,6 @@ function LandingPage() {
 
                         </div>
 
-
                         <div className="hero-card">
 
                             <div className="hero-card-icon">
@@ -84,7 +82,6 @@ function LandingPage() {
                                 and academic information from one place.
                             </p>
 
-
                             <div className="hero-card-stats">
 
                                 <div>
@@ -96,7 +93,6 @@ function LandingPage() {
                                         Authentication
                                     </span>
                                 </div>
-
 
                                 <div>
                                     <strong>
@@ -136,7 +132,8 @@ function LandingPage() {
                             </h2>
 
                             <p>
-                                The Student Management System provides
+                                The University College of Jaffna
+                                Student Management System provides
                                 administrators with a centralized platform
                                 to manage student records and accounts.
                             </p>
@@ -168,7 +165,6 @@ function LandingPage() {
 
                         </div>
 
-
                         <div className="features-grid">
 
                             <div className="feature-card">
@@ -188,7 +184,6 @@ function LandingPage() {
 
                             </div>
 
-
                             <div className="feature-card">
 
                                 <div className="feature-icon">
@@ -205,7 +200,6 @@ function LandingPage() {
                                 </p>
 
                             </div>
-
 
                             <div className="feature-card">
 
@@ -231,7 +225,6 @@ function LandingPage() {
                 </section>
 
             </main>
-
 
             <Footer />
 

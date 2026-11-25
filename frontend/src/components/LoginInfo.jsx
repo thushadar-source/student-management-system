@@ -19,7 +19,7 @@ function LoginInfo({ onBack }) {
                 </div>
 
                 <h1>
-                    Student Management System
+                    University College of Jaffna
                 </h1>
 
                 <p>

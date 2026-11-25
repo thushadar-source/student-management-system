@@ -305,3 +305,8 @@
         font-size: 11px;
     }
 }
+.navbar-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
